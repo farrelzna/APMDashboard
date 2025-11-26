@@ -10,7 +10,7 @@
                         v-model="newFinance.name"
                         name="name"
                         label="Name"
-                        outlined
+                        variant="outlined"
                         hide-details
                         :error-messages="errors.name"
                     ></v-text-field>
@@ -53,7 +53,7 @@
                         name="po"
                         label="PO"
                         hide-details
-                        outlined
+                        variant="outlined"
                         :error-messages="errors.po"
                     ></v-text-field>
                 </v-col>
@@ -65,7 +65,7 @@
                         v-model="newFinance.invoice_number"
                         name="invoice_number"
                         label="Invoice Number"
-                        outlined
+                        variant="outlined"
                         :error-messages="errors.invoice_number"
                     ></v-text-field>
                 </v-col>
@@ -78,7 +78,7 @@
                         :items="statusOptions"
                         hide-details
                         label="Status"
-                        outlined
+                        variant="outlined"
                         :error-messages="errors.status"
                     ></v-select>
                 </v-col>
@@ -89,7 +89,7 @@
                         name="note"
                         label="Note"
                         hide-details
-                        outlined
+                        variant="outlined"
                         :error-messages="errors.note"
                         auto-grow
                     ></v-textarea>
@@ -151,7 +151,7 @@
 
 <script setup>
 import { ref, toRefs } from 'vue';
-import { useToast } from 'vue-toastification';
+import { toast } from 'vue-sonner';
 
 const statusOptions = [
     'Complete',
@@ -194,7 +194,6 @@ const props = defineProps({
 
 const { formData, errors } = toRefs(props);
 const deletedFinance = ref([]);
-const toast = useToast();
 
 const formatDate = date => {
     if (!date) return '';

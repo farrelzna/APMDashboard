@@ -33,7 +33,7 @@
 
 <script setup>
 import { ref, onMounted, toRefs, defineProps } from 'vue';
-import { useToast } from 'vue-toastification';
+import { toast } from 'vue-sonner';
 
 const headers = [
     { title: '#', key: 'number', sortable: false },

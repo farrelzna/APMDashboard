@@ -1,11 +1,10 @@
-import { useToast } from 'vue-toastification';
+import { toast } from 'vue-sonner';
 import { defineStore } from 'pinia';
 
 export const useDashboardStore = defineStore('dashboard', () => {
     const config = useRuntimeConfig();
     const token = useCookie('access_token');
     const dashboardData = ref(null);
-    const toast = useToast();
 
     async function fetchData() {
         try {

@@ -9,7 +9,7 @@
                     <v-text-field
                         v-model="newStatus.description"
                         label="Description"
-                        outlined
+                        variant="outlined"
                         :error-messages="errors.description"
                     ></v-text-field>
                 </v-col>
@@ -44,7 +44,7 @@
                         v-model="newStatus.status"
                         :items="statusOptions"
                         label="Status"
-                        outlined
+                        variant="outlined"
                         :error-messages="errors.status"
                     ></v-select>
                 </v-col>
@@ -53,7 +53,7 @@
                     <v-textarea
                         v-model="newStatus.note"
                         label="Note"
-                        outlined
+                        variant="outlined"
                         :error-messages="errors.note"
                         auto-grow
                     ></v-textarea>
@@ -106,7 +106,7 @@
 
 <script setup>
 import { ref } from 'vue';
-import { useToast } from 'vue-toastification';
+import { toast } from 'vue-sonner';
 
 const statusOptions = [
     'Complete',
@@ -140,7 +140,6 @@ const props = defineProps({
 });
 
 const { formData, errors } = toRefs(props);
-const toast = useToast();
 const isEditing = ref(false);
 const deletedStatus = ref([]);
 

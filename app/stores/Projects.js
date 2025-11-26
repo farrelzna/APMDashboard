@@ -1,4 +1,4 @@
-import { useToast } from 'vue-toastification';
+import { toast } from 'vue-sonner';
 import { defineStore } from 'pinia';
 import { handleRequest } from '@/utils/request';
 import { filterData } from '@/utils/filterUpdateData';
@@ -6,7 +6,6 @@ import { filterData } from '@/utils/filterUpdateData';
 export const useProjectStore = defineStore('project', () => {
     const config = useRuntimeConfig();
     const token = useCookie('access_token');
-    const toast = useToast();
     const authHeader = { Authorization: `Bearer ${token.value}` };
 
     const fields = [

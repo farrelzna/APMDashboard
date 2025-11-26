@@ -83,13 +83,12 @@
 </template>
 
 <script setup>
-import { useToast } from 'vue-toastification';
+import { toast } from 'vue-sonner';
 import ContractForm from './ContractForm.vue';
 import BasicForm from './BasicForm.vue';
 
 const tab = ref('project');
 const subTabs = ref('basic-info');
-const toast = useToast();
 const projectStore = useProjectStore();
 
 const props = defineProps({

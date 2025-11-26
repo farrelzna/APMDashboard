@@ -1,6 +1,4 @@
-import { useToast } from 'vue-toastification';
-
-const toast = useToast();
+import { toast } from 'vue-sonner';
 
 export async function handleRequest(url, method, headers, body = null) {
     try {

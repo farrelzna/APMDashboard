@@ -1,8 +1,7 @@
-import { useToast } from 'vue-toastification';
+import { toast } from 'vue-sonner';
 
 export const useUserStore = defineStore('user', () => {
     const config = useRuntimeConfig();
-    const toast = useToast();
     const user = useCookie('user');
     const token = useCookie('access_token');
     const userGroupPermissions = useRoles();
@@ -126,7 +125,6 @@ export const useUserStore = defineStore('user', () => {
             sortBy = [], // [{ key: 'name', order: 'asc' }]
             search = '',
         } = options;
-        const toast = useToast(); // Ensure toast is accessible
         const config = useRuntimeConfig(); // Ensure config is accessible
         const token = useCookie('access_token'); // Ensure token is accessible
 
@@ -174,7 +172,6 @@ export const useUserStore = defineStore('user', () => {
     }
 
     async function addUser(userData) { // userData is expected to have first_name, last_name
-        const toast = useToast();
         const config = useRuntimeConfig();
         const token = useCookie('access_token');
 
@@ -236,7 +233,6 @@ export const useUserStore = defineStore('user', () => {
     }
 
     async function updateUser(userId, userData) { // userData is expected to have first_name, last_name
-        const toast = useToast();
         const config = useRuntimeConfig();
         const token = useCookie('access_token');
 
@@ -297,7 +293,6 @@ export const useUserStore = defineStore('user', () => {
         }
     }
     async function deleteUser(userId) {
-        const toast = useToast();
         const config = useRuntimeConfig();
         const token = useCookie('access_token');
         try {

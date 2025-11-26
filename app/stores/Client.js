@@ -1,12 +1,11 @@
 import { defineStore } from 'pinia';
-import { useToast } from 'vue-toastification';
+import { toast } from 'vue-sonner';
 import { createFormData } from '@/utils/formData';
 import { handleRequest } from '@/utils/request';
 
 export const useClientStore = defineStore('client', () => {
     const config = useRuntimeConfig();
     const token = useCookie('access_token');
-    const toast = useToast();
     const authHeader = { Authorization: `Bearer ${token.value}` };
 
     const fields = ['name', 'address', 'phone', 'email', 'web', 'logoFile', 'status'];
