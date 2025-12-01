@@ -6,11 +6,11 @@
     >
         <template v-slot:default>
             <v-card-item class="pa-0">
-                <!-- Metrics Grid 2x2 -->
-                <div class="pa-6" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-bottom: 20px;">
-                    
-                        <h4 class="font-semibold">Projects Analytics</h4>
-                    
+                <!-- Metrics Grid 2x3 -->
+                <div class="pa-4" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 20px;">
+                    <h4 class="font-semibold">Projects Analytics</h4>
+                    <!-- <div style="grid-column: 1 / -1;">
+                    </div> -->
                     <div>
                         <div class="text-caption text-grey mb-1">Maintenance</div>
                         <div class="text-h4 font-weight-medium">{{ props.data['Maintenance'] ?? 0 }}</div>
@@ -26,6 +26,10 @@
                     <div>
                         <div class="text-caption text-grey mb-1">Almost Due</div>
                         <div class="text-h4 font-weight-medium">{{ props.data['Almost Due'] ?? 0 }}</div>
+                    </div>
+                    <div>
+                        <div class="text-caption text-grey mb-1">Overdue</div>
+                        <div class="text-h4 font-weight-medium text-error">{{ overdueCount }}</div>
                     </div>
                 </div>
 
@@ -57,6 +61,11 @@ const props = defineProps({
 
 const loading = ref(true); // Set to false when data is loaded
 
+// Computed property to calculate overdue projects
+const overdueCount = computed(() => {
+    return props.data['Overdue'] ?? 0;
+});
+
 const chartSeries = ref([
     {
         name: 'Projects',
@@ -65,6 +74,7 @@ const chartSeries = ref([
             props.data['Complete'] || 0,
             props.data['In Progress'] || 0,
             props.data['Almost Due'] || 0,
+            props.data['Overdue'] || 0,
         ]
     }
 ]);
@@ -79,6 +89,7 @@ watch(
                         newData['Complete'] || 0,
                         newData['In Progress'] || 0,
                         newData['Almost Due'] || 0,
+                        newData['Overdue'] || 0,
                     ]
                 }];
         loading.value = false; // Set loading to false when data is loaded
@@ -104,7 +115,7 @@ const chartOptions = computed(() => ({
         size: 0
     },
     xaxis: {
-        categories: ['Maintenance', 'Complete', 'On-going', 'Almost Due'],
+        categories: ['Maintenance', 'Complete', 'On-going', 'Almost Due', 'Overdue'],
         labels: { 
             show: true,
             style: { 
