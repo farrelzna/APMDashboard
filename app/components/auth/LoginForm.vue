@@ -14,12 +14,6 @@ const handleLogin = async () => {
     }
 };
 
-const handleKeyPress = async event => {
-    if (event.key === 'Enter') {
-        await handleLogin();
-    }
-};
-
 const toggleShowPassword = () => {
     showPassword.value = !showPassword.value;
 };
@@ -27,33 +21,58 @@ const toggleShowPassword = () => {
 
 <template>
     <div>
-        <div class="d-flex align-center text-center mb-6">
-            <div class="text-h6 w-100 px-5 font-weight-regular auth-divider position-relative">
-                <hr />
-            </div>
+        <div class="mb-6">
+            <h2 class="text-h5 font-weight-bold mb-2">Welcome Back</h2>
+            <p class="text-body-2 text-medium-emphasis">Sign in to continue</p>
         </div>
-        <div>
-            <v-row class="mb-3">
-                <v-col cols="12">
-                    <v-label class="font-weight-medium mb-1">Username</v-label>
-                    <v-text-field v-model="username" @keydown="handleKeyPress" variant="outlined" class="pwdInput"
-                        hide-details color="primary" placeholder="Username"></v-text-field>
+        
+        <v-form @submit.prevent="handleLogin">
+            <v-row class="mb-0">
+                <v-col cols="12" class="pb-2">
+                    <v-label class="font-weight-medium mb-2 text-body-2" color="white">Username</v-label>
+                    <v-text-field 
+                        v-model="username"                         
+                        variant="outlined" 
+                        density="comfortable"
+                        hide-details 
+                        color="white" 
+                        placeholder="Enter your username"
+                    ></v-text-field>
                 </v-col>
-                <v-col cols="12">
-                    <v-label class="font-weight-medium mb-1">Password</v-label>
-                    <v-text-field v-model="password" @keydown="handleKeyPress" variant="outlined"
-                        class="border-borderColor" :type="showPassword ? 'text' : 'password'" hide-details
-                        color="primary" placeholder="Password"
+                
+                <v-col cols="12" class="py-2">
+                    <v-label class="font-weight-medium mb-2 text-body-2">Password</v-label>
+                    <v-text-field 
+                        v-model="password"                         
+                        variant="outlined"
+                        density="comfortable"
+                        :type="showPassword ? 'text' : 'password'" 
+                        hide-details
+                        color="primary" 
+                        placeholder="Enter your password"
                         :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
-                        @click:append-inner="toggleShowPassword"></v-text-field>
+                        @click:append-inner="toggleShowPassword"
+                    ></v-text-field>
                 </v-col>
-                <v-col cols="12">
-                    <v-btn size="large" rounded="pill" color="primary" class="rounded-pill" block type="submit" flat
-                        @click="handleLogin">
-                        Login
+                
+                <v-col cols="12" class="pt-4">
+                    <v-btn 
+                        size="large"                     
+                        block 
+                        type="submit" 
+                        flat
+                        class="text-none font-weight-medium rounded-sm"
+                    >
+                        Sign In
                     </v-btn>
                 </v-col>
             </v-row>
-        </div>
+        </v-form>
     </div>
 </template>
+
+<style scoped>
+.v-label, .v-text-field, h2 {
+    color: white !important;
+}
+</style>

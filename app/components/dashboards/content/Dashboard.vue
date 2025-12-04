@@ -210,7 +210,7 @@ onBeforeUnmount(() => {
         <!-- Banner -->
         <div class="bg-[#Ff5f00] rounded-xl p-8 shadow-sm position-relative overflow-hidden">
             <!-- Background Image -->
-            <img src="/images/banner.png" alt="Banner Background" class="position-absolute" style="right: 0; top: 50%; transform: translateY(-50%); height: 100%; width: auto; z-index: 0;" />
+            <img src="/images/backgrounds/banner.png" alt="Banner Background" class="position-absolute" style="right: 0; top: 50%; transform: translateY(-50%); height: 100%; width: auto; z-index: 0;" />
             
             <div class="d-flex align-end justify-space-between position-relative" style="z-index: 1;">
                 <div class="max-w-2xl">

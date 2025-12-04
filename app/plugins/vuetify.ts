@@ -27,6 +27,8 @@ export default defineNuxtPlugin((nuxtApp) => {
     defaults: {
       VCard: {
         rounded: 'xl',
+        elevation: 0,
+        flat: true,
       },
       VTextField: {
         variant: 'outlined',

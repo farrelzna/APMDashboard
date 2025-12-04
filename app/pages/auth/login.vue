@@ -5,27 +5,56 @@ definePageMeta({
 });
 </script>
 <template>
-    <div class="authentication">
-        <v-container fluid class="pa-3">
-            <v-row class="h-100vh d-flex justify-center align-center">
-                <v-col cols="12" class="d-flex align-center">
-                    <div class="boxed-auth-wrap">
-                        <v-card
-                            rounded="xl"
-                            elevation="10"
-                            class="px-sm-1 px-0 mx-auto index-2"
-                            max-width="450"
-                        >
-                            <v-card-item class="pa-sm-8">
-                                <div class="d-flex justify-center mb-5">
-                                    <LayoutFullLogoDark />
-                                </div>
-                                <AuthLoginForm />
-                            </v-card-item>
-                        </v-card>
-                    </div>
-                </v-col>
-            </v-row>
-        </v-container>
+    <div class="min-h-screen w-full relative overflow-hidden" style="background-color: #2c2c2c;">
+        <!-- Background Image -->
+        <div class="absolute inset-0 z-0">
+            <img 
+                src="/images/backgrounds/Group-89-2-scaled.jpg" 
+                alt="Background" 
+                class="w-full h-full object-cover opacity-60"
+            />
+        </div>
+
+        <!-- Text APM di pojok kiri atas -->
+        <div class="absolute top-8 left-8 z-10">            
+            <LayoutFullLogoDark />
+        </div>
+
+        <!-- Let's Talk di pojok kanan atas -->
+        <div class="absolute top-8 right-12 z-10">
+            <a 
+                href="https://daas.co.id/about/#contact" 
+                target="_blank"
+                class="text-white font-medium text-lg hover:text-orange-500 transition-colors duration-300 flex items-center gap-2"
+                style="text-decoration: none;"
+            >
+                Let's Talk
+                <v-icon icon="mdi-arrow-right" size="small" />
+            </a>
+        </div>
+
+        <!-- Logo + Text Dasa di pojok kiri bawah -->
+        <div class="absolute bottom-12 left-12 z-10 items-end">
+            <h1 class="text-white font-light leading-tight" style="font-size: clamp(2rem, 6vw, 4rem); line-height: 1.1;">
+                Most Reliable and <br/> Trusted Technology Company
+            </h1>        
+        </div>
+
+        <!-- Login Card di pojok kanan bawah -->
+        <div class="absolute bottom-12 right-12 z-10">
+            <v-card
+                class="px-4 py-6"
+                max-width="500"
+                width="500"                                
+                style="background: black !important;" 
+            >
+                <v-card-item class="pa-4">
+                    <AuthLoginForm />
+                </v-card-item>
+            </v-card>
+        </div>
+
+        <!-- Decorative gradient overlay (optional) -->
+        <div class="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-black/20 pointer-events-none"></div>
     </div>
 </template>
