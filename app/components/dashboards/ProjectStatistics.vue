@@ -102,28 +102,57 @@ watch(
 // Resize observer untuk adaptasi chart saat sidebar berubah
 let resizeObserver = null;
 let rafId = null;
+let lastWidth = null;
+let updateTimeout = null;
+let lastUpdateTime = 0;
 
 const updateChartSize = () => {
-    // Cancel previous animation frame
+    const now = Date.now();
+    
+    // Throttle: minimum 300ms between actual chart updates
+    if (now - lastUpdateTime < 300) {
+        return;
+    }
+    
+    // Cancel previous animation frame and timeout
     if (rafId) {
         cancelAnimationFrame(rafId);
     }
+    if (updateTimeout) {
+        clearTimeout(updateTimeout);
+    }
     
-    // Use requestAnimationFrame untuk smooth rendering
-    rafId = requestAnimationFrame(() => {
+    // Use minimal debounce (50ms) for batching rapid resize events
+    updateTimeout = setTimeout(() => {
         if (chartRef.value && chartRef.value.chart) {
             const container = chartRef.value.$el?.parentElement;
             if (container) {
                 const newWidth = container.offsetWidth;
-                chartRef.value.chart.updateOptions({
-                    chart: {
-                        width: newWidth
-                    }
-                }, false, false, false);
+                // Only update if width actually changed significantly (>15px)
+                if (lastWidth === null || Math.abs(newWidth - lastWidth) > 15) {
+                    lastWidth = newWidth;
+                    lastUpdateTime = Date.now();
+                    
+                    rafId = requestAnimationFrame(() => {
+                        try {
+                            if (chartRef.value?.chart) {
+                                // Use updateOptions with minimal parameters for performance
+                                chartRef.value.chart.updateOptions({
+                                    chart: {
+                                        width: newWidth
+                                    }
+                                }, false, false); // Disable animation and redraw
+                            }
+                        } catch (e) {
+                            console.error('Chart update error:', e);
+                        }
+                        rafId = null;
+                    });
+                }
             }
         }
-        rafId = null;
-    });
+        updateTimeout = null;
+    }, 50); // Short debounce
 };
 
 onMounted(() => {
@@ -131,6 +160,7 @@ onMounted(() => {
         // Observe chart container langsung
         const chartContainer = chartRef.value?.$el?.parentElement;
         if (chartContainer) {
+            lastWidth = chartContainer.offsetWidth;
             resizeObserver = new ResizeObserver(() => {
                 updateChartSize();
             });
@@ -146,6 +176,9 @@ onBeforeUnmount(() => {
     if (rafId) {
         cancelAnimationFrame(rafId);
     }
+    if (updateTimeout) {
+        clearTimeout(updateTimeout);
+    }
 });
 
 const chartOptions = computed(() => ({
@@ -157,6 +190,9 @@ const chartOptions = computed(() => ({
         background: 'transparent',
         animations: {
             enabled: false
+        },
+        sparkline: {
+            enabled: false
         }
     },
     stroke: {
@@ -165,7 +201,8 @@ const chartOptions = computed(() => ({
         colors: ['#6b7280']
     },
     markers: {
-        size: 0
+        size: 0,
+        strokeWidth: 0
     },
     xaxis: {
         categories: ['Maintenance', 'Complete', 'On-going', 'Almost Due', 'Overdue'],

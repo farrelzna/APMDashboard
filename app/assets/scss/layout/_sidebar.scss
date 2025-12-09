@@ -7,6 +7,9 @@
     background: #141414 !important;
     color: #fff;
     border: none;
+    will-change: width;
+    transform: translateZ(0);
+    backface-visibility: hidden;
 
     @media screen and (max-width:1279px) {
         height: 100% !important;
@@ -73,9 +76,7 @@
         height: 100%;
         background: #FF5F00;
         opacity: 0;
-        transform: scaleX(0);
-        transform-origin: left center;
-        transition: transform 0.4s ease, width 0.4s ease, opacity 0.4s ease;
+        transition: width 0.2s ease, opacity 0.2s ease;
         border-radius: 0 8px 8px 0;
         z-index: 0;
     }
@@ -83,7 +84,6 @@
     .v-list-item:hover::after {
         width: 100%;
         opacity: 0.2;
-        transform: scaleX(1);
     }
 
     .v-list-item .v-icon {

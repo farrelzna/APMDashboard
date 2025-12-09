@@ -9,9 +9,9 @@ import { useDisplay } from 'vuetify';
 const sidebarMenu = shallowRef(sidebarItems);
 const sDrawer = ref(true);
 const userStore = useUserStore();
-const [listRef] = useAutoAnimate();
-const [logoRef] = useAutoAnimate();
-const [profileRef] = useAutoAnimate();
+const [listRef] = useAutoAnimate({ duration: 200 });
+const [logoRef] = useAutoAnimate({ duration: 150 });
+const [profileRef] = useAutoAnimate({ duration: 200 });
 const rail = ref(false);
 const isDragging = ref(false);
 const startX = ref(0);
@@ -24,15 +24,22 @@ onMounted(() => {
     } catch (e) {}
 });
 
+let lastUpdateTime = 0;
+const UPDATE_THROTTLE = 50; // milliseconds
+
 const handleMouseDown = (e) => {
     isDragging.value = true;
     startX.value = e.clientX;
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
+    lastUpdateTime = Date.now();
+    document.addEventListener('mousemove', handleMouseMove, { passive: true });
+    document.addEventListener('mouseup', handleMouseUp, { passive: true });
 };
 
 const handleMouseMove = (e) => {
     if (!isDragging.value) return;
+    
+    const now = Date.now();
+    if (now - lastUpdateTime < UPDATE_THROTTLE) return;
     
     const diff = e.clientX - startX.value;
     
@@ -41,12 +48,14 @@ const handleMouseMove = (e) => {
         rail.value = true;
         isDragging.value = false;
         cleanupListeners();
+        lastUpdateTime = now;
     }
     // Jika sidebar tertutup dan drag ke kanan lebih dari 50px, buka
     else if (rail.value && diff > 50) {
         rail.value = false;
         isDragging.value = false;
         cleanupListeners();
+        lastUpdateTime = now;
     }
 };
 
@@ -96,11 +105,11 @@ const cleanupListeners = () => {
             </v-btn>
         </div>
 
-        <div class="p-8 w-full flex justify-center items-center" ref="logoRef">
+        <div class="p-8 w-full flex justify-center items-center" :ref="logoRef">
             <LayoutFullLogoDark v-if="!rail" />
         </div>
         <div class="scrollnavbar overflow-y-hidden flex flex-col h-full relative">
-            <v-list class="py-2" ref="listRef">
+            <v-list class="py-2" :ref="listRef">
                 <!---Menu Loop -->
                 <template v-for="(item, i) in sidebarMenu">
                     <!---Item Sub Header -->
@@ -122,7 +131,7 @@ const cleanupListeners = () => {
             </v-list>
             
             <!-- User Profile Button with Dropdown Trigger -->
-            <div class="mt-auto pa-3" v-if="!rail" ref="profileRef">
+            <div class="mt-auto pa-3" v-if="!rail" :ref="profileRef">
                 <LayoutFullVerticalHeaderProfileDD :photo="userStore.user?.photo || '/images/profile/user.png'">
                     <template #activator="{ props }">
                         <v-btn

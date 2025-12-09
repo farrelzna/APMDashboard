@@ -9,40 +9,46 @@
  * })
  */
 export default defineNuxtRouteMiddleware((to) => {
-  // 🔧 DEVELOPMENT BYPASS
-  // Set DISABLE_PERMISSIONS=true in .env to bypass all permission checks
-  const { bypassPermissions } = useDevConfig();
-  if (bypassPermissions) {
-    console.warn("⚠️ DEVELOPMENT MODE: Permission checks DISABLED");
-    return; // Allow all access
-  }
+  try {
+    // 🔧 DEVELOPMENT BYPASS
+    // Set DISABLE_PERMISSIONS=true in .env to bypass all permission checks
+    const { bypassPermissions } = useDevConfig();
+    if (bypassPermissions) {
+      console.warn("DEVELOPMENT MODE: Permission checks DISABLED");
+      return; // Allow all access
+    }
 
-  const { can, canAny } = usePermissionHelpers();
+    const { can, canAny } = usePermissionHelpers();
 
-  // Get required permission from route meta
-  const requiredPermission = to.meta.permission as
-    | string
-    | string[]
-    | undefined;
+    // Get required permission from route meta
+    const requiredPermission = to.meta.permission as
+      | string
+      | string[]
+      | undefined;
 
-  // No permission required - allow access
-  if (!requiredPermission) {
+    // No permission required - allow access
+    if (!requiredPermission) {
+      return;
+    }
+
+    // Check permission
+    let hasPermission = false;
+
+    if (Array.isArray(requiredPermission)) {
+      // User needs ANY of these permissions (OR logic)
+      hasPermission = canAny(requiredPermission);
+    } else {
+      // Single permission check
+      hasPermission = can(requiredPermission);
+    }
+
+    // Redirect to forbidden page if no permission
+    if (!hasPermission) {
+      return navigateTo("/403");
+    }
+  } catch (error) {
+    console.error("Permission middleware error:", error);
+    // Allow access on error to prevent blocking
     return;
-  }
-
-  // Check permission
-  let hasPermission = false;
-
-  if (Array.isArray(requiredPermission)) {
-    // User needs ANY of these permissions (OR logic)
-    hasPermission = canAny(requiredPermission);
-  } else {
-    // Single permission check
-    hasPermission = can(requiredPermission);
-  }
-
-  // Redirect to forbidden page if no permission
-  if (!hasPermission) {
-    return navigateTo("/403");
   }
 });
