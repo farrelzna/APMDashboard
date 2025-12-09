@@ -248,7 +248,7 @@ const dialogDelete = ref(false);
 const infoShow = ref(false);
 const loading = ref(true);
 const saving = ref(false);
-const search = ref('');
+const search = ref(null);
 const userFormCompRef = ref(null);
 const isFormPotentiallyValid = ref(false);
 

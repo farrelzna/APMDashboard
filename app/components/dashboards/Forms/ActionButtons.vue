@@ -42,6 +42,9 @@ const props = defineProps({
     },
 });
 
+const userPermissions = usePermissions();
+const clientPermissions = computed(() => pagePermission[props.data] || {});
+
 const emit = defineEmits(['edit-item', 'info-item', 'delete-item']);
 
 const editItem = item => {
