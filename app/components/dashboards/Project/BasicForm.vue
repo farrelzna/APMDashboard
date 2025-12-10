@@ -1,94 +1,125 @@
 <template>
     <v-row class="p-2">
-        <v-col cols="4" sm="12" md="12" lg="4">
-            <v-text-field v-model="formData.year" label="Year *" :rules="[requiredRule, yearRule]"
-                :error-messages="errors.year" :readonly="isInfo" :variant="isInfo ? 'underlined' : 'outlined'"
-                hide-details></v-text-field>
-            <div class="mt-2">
-                <v-text-field v-model="formData.name" label="Project Name *" :rules="[requiredRule]"
-                    :error-messages="errors.name" :readonly="isInfo" :variant="isInfo ? 'underlined' : 'outlined'"
-                    hide-details></v-text-field>
-            </div>
-            <div class="mt-2">
-                <v-select label="Status *" :items="projectStatus" v-model="formData.status" :rules="[requiredRule]"
-                    :error-messages="errors.status" :readonly="isInfo" :variant="isInfo ? 'underlined' : 'outlined'"
-                    hide-details></v-select>
-            </div>
-            <div class="mt-2">
-                <v-text-field v-model="formData.project_type" label="Project Type *" :rules="[requiredRule]"
-                    :error-messages="errors.project_type" :readonly="isInfo"
-                    :variant="isInfo ? 'underlined' : 'outlined'" hide-details></v-text-field>
-            </div>
-            <div class="mt-2">
-                <v-textarea v-model="formData.remarks" label="Remarks" rows="4" :readonly="isInfo"
-                    :variant="isInfo ? 'underlined' : 'outlined'" hide-details></v-textarea>
-            </div>
-        </v-col>
-        <v-col cols="8" sm="12" md="12" lg="8">
+        <v-col cols="12" lg="9">
             <v-row dense>
-                <v-col>
-                    <v-text-field v-model="formData.pic" label="PIC *" :rules="[requiredRule]"
-                        :error-messages="errors.pic" :readonly="isInfo" :variant="isInfo ? 'underlined' : 'outlined'"
-                        hide-details></v-text-field>
+                <v-col cols="12" md="4">
+                    <label for="name" :class="['field-label', { 'field-label--active': isActive('name') } ]">Project Name *</label>
+                    <v-text-field v-model="formData.name" :rules="[requiredRule]"
+                        :error-messages="errors.name" :readonly="isInfo" :variant="isInfo ? 'underlined' : 'outlined'"
+                        hide-details @focus="focusStates.name = true" @blur="focusStates.name = false"
+                        density="compact"></v-text-field>
                 </v-col>
-                <v-col>
-                    <v-text-field v-model="formData.pid" label="PID *" :rules="[requiredRule]"
-                        :error-messages="errors.pid" :readonly="isInfo" :variant="isInfo ? 'underlined' : 'outlined'"
-                        hide-details></v-text-field>
+                <v-col cols="12" md="4">
+                    <label for="project_type" :class="['field-label', { 'field-label--active': isActive('project_type') } ]">Project Type *</label>
+                    <v-text-field v-model="formData.project_type" :rules="[requiredRule]"
+                        :error-messages="errors.project_type" :readonly="isInfo"
+                        :variant="isInfo ? 'underlined' : 'outlined'" hide-details @focus="focusStates.project_type = true" @blur="focusStates.project_type = false"
+                        density="compact"></v-text-field>
+                </v-col>
+                <v-col cols="12" md="4">
+                    <label for="year" :class="['field-label', { 'field-label--active': isActive('year') } ]">Year *</label>
+                    <v-text-field v-model="formData.year" :rules="[requiredRule, yearRule]"
+                        :error-messages="errors.year" :readonly="isInfo" :variant="isInfo ? 'underlined' : 'outlined'"
+                        hide-details @focus="focusStates.year = true" @blur="focusStates.year = false"
+                        density="compact"></v-text-field>
                 </v-col>
             </v-row>
             <v-row dense>
-                <v-col>
-                    <v-date-input v-model="date.start_date" label="Start Date" prepend-icon=""
+                <v-col cols="12" md="4">
+                    <label for="status" :class="['field-label', { 'field-label--active': isActive('status') } ]">Status*</label>
+                    <v-select :items="projectStatus" v-model="formData.status" :rules="[requiredRule]"
+                        :error-messages="errors.status" :readonly="isInfo" :variant="isInfo ? 'underlined' : 'outlined'"
+                        hide-details @focus="focusStates.status = true" @blur="focusStates.status = false"
+                        density="compact"></v-select>
+                </v-col>
+                <v-col cols="12" md="4">
+                    <label for="start_date" :class="['field-label', { 'field-label--active': isActive('start_date') } ]">Start Date*</label>
+                    <v-date-input v-model="date.start_date" prepend-icon=""
                         prepend-inner-icon="$calendar" :error-messages="errors.start_date" placeholder="YYYY-MM-DD"
                         :readonly="isInfo" :variant="isInfo ? 'underlined' : 'outlined'" hide-details
-                        @input="formatDate"></v-date-input>
+                        @focus="focusStates.start_date = true" @blur="focusStates.start_date = false" @input="formatDate" density="compact"></v-date-input>
                 </v-col>
-                <v-col>
-                    <v-date-input v-model="date.end_date" label="End Date" prepend-icon=""
+                <v-col cols="12" md="4">
+                    <label for="end_date" :class="['field-label', { 'field-label--active': isActive('end_date') } ]">End Date*</label>
+                    <v-date-input v-model="date.end_date" prepend-icon=""
                         prepend-inner-icon="$calendar" :error-messages="errors.end_date" placeholder="YYYY-MM-DD"
                         :readonly="isInfo" :variant="isInfo ? 'underlined' : 'outlined'" hide-details
-                        @input="formatDate"></v-date-input>
+                        @focus="focusStates.end_date = true" @blur="focusStates.end_date = false" @input="formatDate"
+                        density="compact"></v-date-input>
                 </v-col>
             </v-row>
             <v-row dense>
-                <v-col>
-                    <v-autocomplete v-model="formData.am" label="AM" :items="userByRole.pm" :readonly="isInfo"
-                        :variant="isInfo ? 'underlined' : 'outlined'" hide-details></v-autocomplete>
+                <v-col cols="12" md="4">
+                    <label for="remarks" :class="['field-label', { 'field-label--active': isActive('remarks') } ]">Remarks</label>
+                    <v-textarea v-model="formData.remarks" rows="8" :readonly="isInfo"
+                        :variant="isInfo ? 'underlined' : 'outlined'" hide-details @focus="focusStates.remarks = true" @blur="focusStates.remarks = false"
+                        density="compact"></v-textarea>
                 </v-col>
-                <v-col>
-                    <v-autocomplete v-model="formData.pm" label="PM" :items="userByRole.pm" :readonly="isInfo"
-                        :variant="isInfo ? 'underlined' : 'outlined'" hide-details></v-autocomplete>
+                <v-col cols="12" md="8">
+                    <v-row dense>
+                        <v-col cols="12" md="6">
+                            <label for="am" :class="['field-label', { 'field-label--active': isActive('am') } ]">AM</label>
+                            <v-autocomplete v-model="formData.am" :items="userByRole.pm" :readonly="isInfo"
+                                :variant="isInfo ? 'underlined' : 'outlined'" hide-details @focus="focusStates.am = true" @blur="focusStates.am = false"
+                                density="compact"></v-autocomplete>
+                        </v-col>
+                        <v-col cols="12" md="6">
+                            <label for="pm" :class="['field-label', { 'field-label--active': isActive('pm') } ]">PM</label>
+                            <v-autocomplete v-model="formData.pm" :items="userByRole.pm" :readonly="isInfo"
+                                :variant="isInfo ? 'underlined' : 'outlined'" hide-details @focus="focusStates.pm = true" @blur="focusStates.pm = false" density="compact"></v-autocomplete>
+                        </v-col>
+                    </v-row>
+                    <v-row dense>
+                        <v-col cols="12" md="6">
+                            <label for="sales" :class="['field-label', { 'field-label--active': isActive('sales') } ]">Sales</label>
+                            <v-autocomplete v-model="formData.sales" :items="userByRole.sales" :readonly="isInfo"
+                                :variant="isInfo ? 'underlined' : 'outlined'" hide-details @focus="focusStates.sales = true" @blur="focusStates.sales = false" density="compact"></v-autocomplete>
+                        </v-col>
+                        <v-col cols="12" md="6">
+                            <label for="admin_tender" :class="['field-label', { 'field-label--active': isActive('admin_tender') } ]">Admin Tender</label>
+                            <v-autocomplete v-model="formData.admin_tender" :items="userByRole.admin_tender"
+                                :readonly="isInfo" :variant="isInfo ? 'underlined' : 'outlined'"
+                                hide-details @focus="focusStates.admin_tender = true" @blur="focusStates.admin_tender = false" density="compact"></v-autocomplete>
+                        </v-col>
+                    </v-row>
+                    <v-row dense>
+                        <v-col cols="12" md="6">
+                            <label for="customer" :class="['field-label', { 'field-label--active': isActive('customer') } ]">Client*</label>
+                            <v-autocomplete v-model="formData.customer" :items="userByRole.customers"
+                                :rules="[requiredRule]" :error-messages="errors.customer" :readonly="isInfo"
+                                :variant="isInfo ? 'underlined' : 'outlined'" hide-details @focus="focusStates.customer = true" @blur="focusStates.customer = false" density="compact"></v-autocomplete>
+                        </v-col>
+                        <v-col cols="12" md="6">
+                            <label for="end_user" :class="['field-label', { 'field-label--active': isActive('end_user') } ]">End User *</label>
+                            <v-autocomplete v-model="formData.end_user" :rules="[requiredRule]"
+                                :error-messages="errors.end_user" :items="userByRole.end_user" :readonly="isInfo"
+                                :variant="isInfo ? 'underlined' : 'outlined'" hide-details @focus="focusStates.end_user = true" @blur="focusStates.end_user = false" density="compact"></v-autocomplete>
+                        </v-col>
+                    </v-row>
                 </v-col>
             </v-row>
+        </v-col>
+        <v-col cols="12" lg="3" class="lg:border-l lg:pl-6">
             <v-row dense>
-                <v-col>
-                    <v-autocomplete v-model="formData.sales" label="Sales" :items="userByRole.sales" :readonly="isInfo"
-                        :variant="isInfo ? 'underlined' : 'outlined'" hide-details></v-autocomplete>
+                <v-col cols="12">
+                    <label for="pic" :class="['field-label', { 'field-label--active': isActive('pic') } ]">PIC *</label>
+                    <v-text-field v-model="formData.pic" :rules="[requiredRule]"
+                        :error-messages="errors.pic" :readonly="isInfo" :variant="isInfo ? 'underlined' : 'outlined'"
+                        hide-details @focus="focusStates.pic = true" @blur="focusStates.pic = false" density="compact"></v-text-field>
                 </v-col>
-                <v-col>
-                    <v-autocomplete v-model="formData.admin_tender" :items="userByRole.admin_tender"
-                        label="Admin Tender" :readonly="isInfo" :variant="isInfo ? 'underlined' : 'outlined'"
-                        hide-details></v-autocomplete>
+                <v-col cols="12">
+                    <label for="pid" :class="['field-label', { 'field-label--active': isActive('pid') } ]">PID *</label>
+                    <v-text-field v-model="formData.pid" :rules="[requiredRule]"
+                        :error-messages="errors.pid" :readonly="isInfo" :variant="isInfo ? 'underlined' : 'outlined'"
+                        hide-details @focus="focusStates.pid = true" @blur="focusStates.pid = false" density="compact"></v-text-field>
                 </v-col>
-            </v-row>
-            <v-row dense>
-                <v-col>
-                    <v-autocomplete v-model="formData.customer" :items="userByRole.customers" label="Client"
-                        :rules="[requiredRule]" :error-messages="errors.customer" :readonly="isInfo"
-                        :variant="isInfo ? 'underlined' : 'outlined'" hide-details></v-autocomplete>
-                </v-col>
-                <v-col>
-                    <v-autocomplete v-model="formData.end_user" label="End User *" :rules="[requiredRule]"
-                        :error-messages="errors.end_user" :items="userByRole.end_user" :readonly="isInfo"
-                        :variant="isInfo ? 'underlined' : 'outlined'" hide-details></v-autocomplete>
+                <v-col cols="12">
+                    <label for="engineer_eksternal" :class="['field-label', { 'field-label--active': isActive('engineer_eksternal') } ]">Engineer Eksternal</label>
+                    <v-autocomplete v-model="formData.engineer_eksternal"
+                        :items="userByRole.engineer_eksternal" multiple :readonly="isInfo"
+                        :variant="isInfo ? 'underlined' : 'outlined'" hide-details @focus="focusStates.engineer_eksternal = true" @blur="focusStates.engineer_eksternal = false" density="compact"></v-autocomplete>
                 </v-col>
             </v-row>
-            <div class="mt-2">
-                <v-autocomplete v-model="formData.engineer_eksternal" label="Engineer Eksternal"
-                    :items="userByRole.engineer_eksternal" multiple :readonly="isInfo"
-                    :variant="isInfo ? 'underlined' : 'outlined'" hide-details></v-autocomplete>
-            </div>
         </v-col>
     </v-row>
 </template>
@@ -204,6 +235,29 @@ const formatDate = date => {
     return `${year}-${month}-${day}`;
 };
 
+// Track focus state per field to drive active label coloring
+const focusStates = reactive({
+    name: false,
+    project_type: false,
+    year: false,
+    status: false,
+    start_date: false,
+    end_date: false,
+    remarks: false,
+    am: false,
+    pm: false,
+    sales: false,
+    admin_tender: false,
+    customer: false,
+    end_user: false,
+    pic: false,
+    pid: false,
+    engineer_eksternal: false,
+});
+
+// Active state should reflect only focus, not filled values
+const isActive = (key) => focusStates[key];
+
 watch(
     () => date.value.start_date,
     newValue => {
@@ -228,3 +282,17 @@ watch(
     }
 );
 </script>
+
+<style scoped>
+.field-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #6b7280; /* gray-500 */
+    display: inline-block;
+    margin-bottom: 6px;
+    transition: color 0.2s ease;
+}
+.field-label--active {
+    color: rgb(var(--v-theme-primary)) !important;
+}
+</style>

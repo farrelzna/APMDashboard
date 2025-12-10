@@ -12,7 +12,7 @@ const BLUE_THEME: ThemeTypes = {
         info: '#46caeb',
         success: '#4bd08b',
         warning: '#FF5F00',
-        error: '#fb977d',
+        error: '#ff0000ff',
         indigo: '#8763da',
         lightprimary: '#e5f3fb',
         lightinfo: '#e1f5fa',

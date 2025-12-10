@@ -33,22 +33,41 @@ definePageMeta({
             </a>
         </div>
 
-        <!-- Logo + Text Dasa di pojok kiri bawah -->
-        <div class="absolute bottom-12 left-12 z-10 items-end">
-            <h1 class="text-white font-light leading-tight" style="font-size: clamp(2rem, 6vw, 4rem); line-height: 1.1;">
-                Most Reliable and <br/> Trusted Technology Company
-            </h1>        
+        <!-- Desktop layout -->
+        <div class="hidden lg:block">
+            <!-- Logo + Text Dasa di pojok kiri bawah -->
+            <div class="absolute bottom-12 left-12 z-10 items-end">
+                <h1 class="text-white font-light leading-tight" style="font-size: clamp(2rem, 6vw, 4rem); line-height: 1.1;">
+                        Most Reliable and <br/> Trusted Technology Company
+                </h1>        
+            </div>
+
+            <!-- Login Card di pojok kanan bawah -->
+            <div class="absolute bottom-12 right-12 z-10">
+                    <v-card
+                            class="px-4 py-6"
+                            max-width="500"
+                            width="500"                                
+                            style="background: black !important;" 
+                    >
+                            <v-card-item class="pa-4">
+                                    <AuthLoginForm />
+                            </v-card-item>
+                    </v-card>
+            </div>
         </div>
 
-        <!-- Login Card di pojok kanan bawah -->
-        <div class="absolute bottom-12 right-12 z-10">
+        <!-- Mobile/Tablet layout -->
+        <div class="lg:hidden relative z-10 px-6 absolute top-1/4 py-8 flex flex-col items-center gap-6">
+            <h1 class="text-white text-center font-light leading-tight" style="font-size: clamp(1.5rem, 7vw, 2.25rem); line-height: 1.2;">
+                Most Reliable and <br/> Trusted Technology Company
+            </h1>
             <v-card
                 class="px-4 py-6"
                 max-width="500"
-                width="500"                                
-                style="background: black !important;" 
+                style="background: black !important;"
             >
-                <v-card-item class="pa-4">
+                <v-card-item class="pa-2">
                     <AuthLoginForm />
                 </v-card-item>
             </v-card>

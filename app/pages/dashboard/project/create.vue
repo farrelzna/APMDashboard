@@ -124,6 +124,10 @@ const nextStep = () => {
     }
 };
 
+const cancel = () => {
+    navigateTo('/dashboard/project');
+};
+
 const previousStep = () => {
     if (currentStep.value > 1) {
         currentStep.value -= 1;
@@ -132,24 +136,18 @@ const previousStep = () => {
 </script>
 
 <template>
-    <v-container class="bg-white shadow rounded">
-        <h1 class="text-xl">Create Project</h1>
-        <br />
-        <v-stepper
-            v-model="currentStep"
-            :items="[
-                'General Informations',
-                'Contract Informations',
-                'Project Finance',
-                'Engineers',
-                'Tasks',
-            ]"
-            hide-actions
-            editable="true"
-            color="primary"
-            class="elevation-0"
-        >
-            <template v-slot:item.1>
+    <v-container class="bg-white shadow rounded text-black">
+        <!-- Tabs-style navigation -->
+        <v-tabs v-model="currentStep" color="primary" class="mb-4">
+            <v-tab :value="1">General Informations</v-tab>
+            <v-tab :value="2">Contract Informations</v-tab>
+            <v-tab :value="3">Project Finance</v-tab>
+            <v-tab :value="4">Engineers</v-tab>
+            <v-tab :value="5">Tasks</v-tab>
+        </v-tabs>
+
+        <v-window v-model="currentStep" class="elevation-0">
+            <v-window-item :value="1">
                 <v-card flat>
                     <v-card-title class="stepper-title">
                         <dashboards-project-basic-form
@@ -159,9 +157,9 @@ const previousStep = () => {
                         />
                     </v-card-title>
                 </v-card>
-            </template>
+            </v-window-item>
 
-            <template v-slot:item.2>
+            <v-window-item :value="2">
                 <v-card flat>
                     <v-card-title class="stepper-title">
                         <dashboards-project-contract-form
@@ -171,9 +169,9 @@ const previousStep = () => {
                         />
                     </v-card-title>
                 </v-card>
-            </template>
+            </v-window-item>
 
-            <template v-slot:item.3>
+            <v-window-item :value="3">
                 <v-card flat>
                     <v-card-title class="stepper-title">
                         <dashboards-project-finance-form
@@ -183,9 +181,9 @@ const previousStep = () => {
                         />
                     </v-card-title>
                 </v-card>
-            </template>
+            </v-window-item>
 
-            <template v-slot:item.4>
+            <v-window-item :value="4">
                 <v-card flat>
                     <v-card-title class="stepper-title">
                         <dashboards-engineer-form
@@ -195,9 +193,9 @@ const previousStep = () => {
                         />
                     </v-card-title>
                 </v-card>
-            </template>
+            </v-window-item>
 
-            <template v-slot:item.5>
+            <v-window-item :value="5">
                 <v-card flat>
                     <v-card-title class="stepper-title">
                         <dashboards-project-task-form
@@ -207,16 +205,24 @@ const previousStep = () => {
                         />
                     </v-card-title>
                 </v-card>
-            </template>
-        </v-stepper>
-
+            </v-window-item>
+        </v-window>
+        <v-divider class="my-4"></v-divider>
         <v-row justify="space-between" class="p-5">
-            <v-btn @click="previousStep" :style="{ color: '#111'}" :disabled="currentStep === 1"
-                >Previous</v-btn
-            >
-            <v-btn @click="nextStep" :style="{ background:'#111', color:'#fff', fontWeight:600 }">
-                {{ currentStep === totalSteps ? 'Done' : 'Next' }}
-            </v-btn>
+            <div class="text-xl font-semibold text-gray-800">Create New Project</div>
+            <div class="d-flex gap-3">
+                <div>
+                    <v-btn v-if="currentStep === 1" @click="cancel" variant="outlined" rounded="lg" :style="{ color: '#111'}">
+                        Cancel
+                    </v-btn>
+                    <v-btn v-else @click="previousStep" variant="outlined" rounded="lg" :style="{ color: '#111'}">
+                        Previous
+                    </v-btn>
+                </div>
+                <v-btn @click="nextStep" rounded="lg" :style="{ background:'#111', color:'#fff', fontWeight:600, maxWidth: '180px', minWidth: '100px' }">
+                        {{ currentStep === totalSteps ? 'Done' : 'Next' }}
+                </v-btn>
+            </div>
         </v-row>
     </v-container>
 </template>

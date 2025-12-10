@@ -229,11 +229,10 @@
     </div>
 
     <!-- Dialog: Add/Edit Form -->
-    <v-overlay
+    <v-dialog
       v-model="dialog"
-      class="d-flex justify-end align-end"
-      width="83%"
-      max-width="83%"
+      class="d-flex justify-center"
+      max-width="60%"
       persistent
       transition="dialog-bottom-transition"
       scrim="rgba(0,0,0,0.4)"
@@ -273,7 +272,7 @@
           </v-card-actions>
         </v-card-text>
       </v-card>
-    </v-overlay>
+    </v-dialog>
 
     <!-- Delete Confirmation Dialog -->
     <UserDeleteConfirm

@@ -94,20 +94,6 @@ onMounted(() => {
             <div
                 class="w-full bg-white p-5 h-full flex items-end flex-col relative"
             >
-                <v-btn
-                    color="warning"
-                    class="position-absolute -right-2 -top-2 p-5 elevation-0"
-                    density="default"
-                    icon="mdi-pencil"
-                    size="x-small"
-                    rounded="xl"
-                    @click="
-                        $router.push(
-                            `/dashboard/project/update/${projectData.id}`
-                        )
-                    "
-                >
-                </v-btn>
                 <v-chip
                     class="ma-2 px-5 self-end font-bold"
                     :color="colorByStatus(projectData.status)"
@@ -120,11 +106,11 @@ onMounted(() => {
 
                 <div class="w-full flex gap-2 flex-wrap lg:justify-end">
                     <div class="w-28">
-                        <h1 class="text-xs font-bold">Start Date</h1>
+                        <h1 class="text-xs font-bold text-black">Start Date</h1>
                         <v-chip
                             v-if="projectData.start_date"
                             class="px-5 py-3 font-bold"
-                            color="primary"
+                            color="info"
                             label
                             size="x-small"
                         >
@@ -137,7 +123,7 @@ onMounted(() => {
                         ></v-skeleton-loader>
                     </div>
                     <div class="w-28">
-                        <h1 class="text-xs font-bold">End Date</h1>
+                        <h1 class="text-xs font-bold text-black">End Date</h1>
                         <v-chip
                             v-if="projectData.end_date"
                             class="px-5 py-3 font-bold"
@@ -154,12 +140,12 @@ onMounted(() => {
                         ></v-skeleton-loader>
                     </div>
                     <div class="w-52 flex flex-col gap-2">
-                        <span class="text-xs font-bold">Progress</span>
+                        <span class="text-xs font-bold text-black">Progress</span>
                         <v-progress-linear
                             v-if="projectData.progress"
                             :model-value="projectData.progress.task_complete"
                             :max="projectData.progress.task_total"
-                            color="primary"
+                            color="info"
                             rounded
                         ></v-progress-linear>
                         <v-skeleton-loader
@@ -178,13 +164,37 @@ onMounted(() => {
     </v-row>
     <v-row>
         <v-col cols="12" sm="12" lg="12">
-            <div class="w-full text-black bg-white shadow rounded">
-                <v-tabs v-model="tab" class="px-5">
-                    <v-tab value="info" size="small">Informations</v-tab>
-                    <v-tab value="finances" size="small">Finances</v-tab>
-                    <v-tab value="engineers" size="small">Engineers</v-tab>
-                    <v-tab value="tasks" size="small">Tasks</v-tab>
-                </v-tabs>
+            <div class="w-full text-black bg-white shadow rounded flex flex-col relative">
+                <v-btn
+                    color="warning"
+                    class="position-absolute -right-2 -top-2 p-5 elevation-0"
+                    density="default"
+                    icon="mdi-pencil"
+                    size="small"
+                    rounded="xll"
+                    @click="
+                        $router.push(
+                            `/dashboard/project/update/${projectData.id}`
+                        )
+                    "
+                >
+                </v-btn>
+                <div class="flex justify-between items-center border-b px-5">
+                    <v-tabs v-model="tab" class="px-5">
+                        <v-tab value="info" size="small">Informations</v-tab>
+                        <v-tab value="finances" size="small">Finances</v-tab>
+                        <v-tab value="engineers" size="small">Engineers</v-tab>
+                        <v-tab value="tasks" size="small">Tasks</v-tab>
+                    </v-tabs>
+                    <v-btn
+                        class="me-8 action-btn"
+                        variant="flat"
+                        prepend-icon="mdi-arrow-left"
+                        @click="navigateTo('/dashboard/project')"
+                    >
+                        Back to projects
+                    </v-btn>
+                </div>
                 <v-card-text>
                     <v-tabs-window v-model="tab">
                         <v-tabs-window-item value="info">

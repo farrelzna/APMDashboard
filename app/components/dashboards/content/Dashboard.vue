@@ -31,6 +31,32 @@ const teamMetrics = computed(() =>
   )
 );
 
+// Recent activities: show last 3 entries (login or user actions)
+const recentActivities = computed(() => {
+  const source =
+    (dashboardData.value &&
+      (dashboardData.value.activities ||
+        dashboardData.value.user_activities ||
+        dashboardData.value.logs)) || [];
+
+  // Normalize entries to a common shape
+  const normalized = source
+    .map((act) => {
+      return {
+        type: act.type || act.action || "Activity",
+        user: act.user?.name || act.user_name || act.username || "Unknown",
+        date:
+          act.date || act.created_at || act.timestamp || new Date().toISOString(),
+        status:
+          act.status || act.result || act.outcome || "Success",
+        avatar: act.user?.photo || null,
+      };
+    })
+    .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  return normalized.slice(0, 3);
+});
+
 // Computed: derive important project (earliest due date / first)
 const importantProject = computed(() => {
   if (!dashboardData.value?.projects?.length) return null;
@@ -409,20 +435,29 @@ onBeforeUnmount(() => {
             >
               <h4 class="font-semibold mb-4">Recent Activities</h4>
               <div class="flex flex-col gap-4">
-                <div class="flex justify-between items-start">
-                  <!--v-for="act in recentActivities" :key="act.project + act.date"-->
+                <div
+                  v-for="(act, idx) in recentActivities"
+                  :key="(act.user || 'u') + (act.date || idx) + (act.type || 't')"
+                  class="flex justify-between items-start"
+                >
                   <div class="flex items-start gap-3">
-                    <v-avatar size="30" color="primary"></v-avatar>
+                    <v-avatar size="30" color="primary">
+                      <v-img v-if="act.avatar" :src="apiMedia + '/' + act.avatar" cover />
+                      <span v-else class="text-white text-xs font-bold">{{ (act.user || 'U').charAt(0).toUpperCase() }}</span>
+                    </v-avatar>
                     <div>
-                      <div class="text-sm font-medium">Type (Add Project)</div>
-                      <div class="text-xs text-gray-500">name user</div>
+                      <div class="text-sm font-medium">{{ act.type }}</div>
+                      <div class="text-xs text-gray-500">{{ act.user }}</div>
                     </div>
                   </div>
                   <div class="text-right text-xs">
-                    <div>date 2025-10-12</div>
-                    <div class="text-green-600">description (success)</div>
+                    <div>{{ act.date }}</div>
+                    <div :class="{'text-green-600': (act.status || '').toLowerCase() === 'success', 'text-red-600': (act.status || '').toLowerCase() === 'failed'}">
+                      {{ act.status }}
+                    </div>
                   </div>
                 </div>
+                <div v-if="recentActivities.length === 0" class="text-xs text-gray-500 text-center">No recent activities</div>
               </div>
             </v-card>
           </div>

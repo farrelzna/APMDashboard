@@ -1,10 +1,9 @@
 <template>
-    <v-overlay
+    <v-dialog
         :model-value="showModal"
         @update:model-value="emit('update:showModal', $event)"
-        class="d-flex justify-end align-end"
-        width="83%"
-        max-width="83%"
+        class="d-flex justify-center"
+        max-width="60%"
         persistent
         transition="dialog-bottom-transition"
         scrim="rgba(0,0,0,0.4)"
@@ -41,7 +40,7 @@
                 </v-btn>
             </v-card-actions>
         </v-card>
-    </v-overlay>
+    </v-dialog>
 </template>
 
 <script setup>

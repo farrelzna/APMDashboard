@@ -2,83 +2,116 @@
     <v-container>
         <v-row>
             <v-col cols="12" md="12">
-                <v-card class="elevation-0">
-                    <v-card-title>Task Form</v-card-title>
+                <v-card title="Task Form" class="elevation-0">
                     <v-card-text>
                         <v-form v-model="valid">
-                            <v-text-field
-                                label="Description"
-                                v-model="task.description"
-                            ></v-text-field>
+                            <v-row align="end">
+                                <v-col cols="12" md="4">
+                                    <label for="description" :class="['field-label', { 'field-label--active': isActive('description') }]">Description</label>
+                                    <v-text-field
+                                        v-model="task.description"
+                                        name="description"
+                                        variant="outlined"
+                                        hide-details
+                                        density="compact"
+                                        @focus="focusStates.description = true" @blur="focusStates.description = false"
+                                    ></v-text-field>
+                                </v-col>
 
-                            <v-select
-                                label="Status"
-                                v-model="task.status"
-                                :items="statuses"
-                            ></v-select>
+                                <v-col cols="12" md="4">
+                                    <label for="status" :class="['field-label', { 'field-label--active': isActive('status') }]">Status</label>
+                                    <v-select
+                                        v-model="task.status"
+                                        name="status"
+                                        :items="statuses"
+                                        variant="outlined"
+                                        hide-details
+                                        density="compact"
+                                        @focus="focusStates.status = true" @blur="focusStates.status = false"
+                                    ></v-select>
+                                </v-col>
 
-                            <v-textarea
-                                label="Note"
-                                v-model="task.note"
-                            ></v-textarea>
+                                <v-col cols="12" md="8">
+                                    <label for="note" :class="['field-label', { 'field-label--active': isActive('note') }]">Note</label>
+                                    <v-textarea
+                                        v-model="task.note"
+                                        name="note"
+                                        variant="outlined"
+                                        hide-details
+                                        auto-grow
+                                        density="compact"
+                                        @focus="focusStates.note = true" @blur="focusStates.note = false"
+                                    ></v-textarea>
+                                </v-col>
 
-                            <v-btn :style="{ background:'#111', color:'#fff', fontWeight:600 }" @click="saveTask">
-                                {{ isEditing ? 'Save Task' : 'Add Task' }}
-                            </v-btn>
+                                <v-col cols="4">
+                                    <div class="flex justify-end">
+                                        <v-btn
+                                            :style="{ background:'#111', color:'#fff', fontWeight:600 }"
+                                            width="40%"
+                                            rounded="lg"
+                                            @click="saveTask"
+                                        >
+                                            {{ isEditing ? 'Save Task' : 'Add Task' }}
+                                        </v-btn>
+                                    </div>
+                                </v-col>
+                            </v-row>
                         </v-form>
                     </v-card-text>
                 </v-card>
             </v-col>
-
-            <!-- <v-col cols="12" md="6">
-                <v-card class="elevation-0">
-                    <v-card-title>Subtask Form</v-card-title>
-                    <v-card-text>
-                        <v-form v-model="validsub">
-                            <v-text-field
-                                label="Description"
-                                v-model="sub.description"
-                            ></v-text-field>
-
-                            <v-select
-                                label="Status"
-                                v-model="sub.status"
-                                :items="statuses"
-                            ></v-select>
-
-                            <v-textarea
-                                label="Note"
-                                v-model="sub.note"
-                            ></v-textarea>
-
-                            <v-btn color="primary" @click="addSubtask"
-                                >Add Subtask</v-btn
-                            >
-                        </v-form>
-                    </v-card-text>
-                </v-card>
-            </v-col> -->
         </v-row>
 
         <v-divider></v-divider>
 
         <v-row>
             <v-col cols="12">
+                <div class="flex items-center justify-between py-5">
+                    <div class="text-xl font-bold text-grey-darken-1">Task Table</div>
+                    <div class="flex items-center gap-1 text-sm text-grey-darken-1">
+                        <v-select
+                            class="mx-2"
+                            :items="perPageOptions"
+                            v-model="itemsPerPage"
+                            density="compact"
+                            variant="outlined"
+                            rounded="lg"
+                            hide-details
+                            style="max-width: 90px;"
+                        />
+                        <span class="text-xs font-medium text-gray-500">{{ rangeStart }}-{{ rangeEnd }} of {{ totalItems }}</span>
+                        <v-btn size="small" variant="text" icon="mdi-page-first" :disabled="page === 1" @click="page = 1" />
+                        <v-btn size="small" variant="text" icon="mdi-chevron-left" :disabled="page === 1" @click="page = Math.max(1, page - 1)" />
+                        <v-btn size="small" variant="text" icon="mdi-chevron-right" :disabled="page === pageCount" @click="page = Math.min(pageCount, page + 1)" />
+                        <v-btn size="small" variant="text" icon="mdi-page-last" :disabled="page === pageCount" @click="page = pageCount" />
+                    </div>
+                </div>
                 <v-data-table
                     :headers="headers"
-                    :items="formData.project_status"
+                    :items="filteredItems"
                     item-value="description"
                     show-expand
+                    :items-per-page="itemsPerPage"
+                    v-model:page="page"
+                    hide-default-footer
                     class="elevation-0"
-                    expand-on-click
                 >
+                    <template v-slot:expanded-row="{ columns, item }">
+                        <tr>
+                            <td :colspan="columns.length">
+                                <strong>Note : </strong>
+                                <span>{{ item.note }}</span>
+                            </td>
+                        </tr>
+                    </template>
                     <template v-slot:item.checkbox="{ item }">
                         <v-checkbox
                             :model-value="item.status === 'Complete'"
                             density="compact"
                             class="h-10"
                             hide-details
-                            disabled
+                            @update:modelValue="val => item.status = val ? 'Complete' : 'In Progress'"
                         />
                     </template>
                     <template v-slot:item.status="{ item }">
@@ -110,6 +143,7 @@
 </template>
 
 <script setup>
+import { ref, onMounted, reactive, computed, watch } from 'vue';
 const props = defineProps({
     formData: Object, // Expecting `formData` as a prop
     errors: Object, // If there are validation errors
@@ -171,7 +205,7 @@ const statuses = [
 ];
 
 const headers = [
-    { title: '', key: 'checkbox', width: '1%' },
+    { title: '#', key: 'checkbox', width: '1%' },
     { title: 'Description', key: 'description' },
     { title: 'Status', key: 'status' },
     { title: 'Actions', key: 'actions' },
@@ -247,4 +281,44 @@ onMounted(() => {
         props.formData.project_status = [...defaultTasks];
     }
 });
+
+const page = ref(1);
+const itemsPerPage = ref(10);
+const perPageOptions = [10, 25, 50];
+
+const filteredItems = computed(() => (props.formData.project_status || []).filter(i => i && !('delete_id' in i)));
+const totalItems = computed(() => filteredItems.value.length);
+const pageCount = computed(() => Math.max(1, Math.ceil(totalItems.value / itemsPerPage.value)));
+const rangeStart = computed(() => (totalItems.value === 0 ? 0 : (page.value - 1) * itemsPerPage.value + 1));
+const rangeEnd = computed(() => Math.min(totalItems.value, page.value * itemsPerPage.value));
+
+watch(itemsPerPage, () => {
+    if (page.value > pageCount.value) page.value = pageCount.value;
+});
+
+watch(filteredItems, () => {
+    if (page.value > pageCount.value) page.value = pageCount.value;
+});
+
+const focusStates = reactive({
+    description: false,
+    status: false,
+    note: false,
+});
+
+const isActive = (key) => focusStates[key];
 </script>
+
+<style scoped>
+.field-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #6b7280;
+    display: inline-block;
+    margin-bottom: 6px;
+    transition: color 0.2s ease;
+}
+.field-label--active {
+    color: rgb(var(--v-theme-primary)) !important;
+}
+</style>
