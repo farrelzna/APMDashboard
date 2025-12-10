@@ -133,7 +133,7 @@
         </div>
         <v-divider></v-divider>
         <div class="flex items-center justify-between py-5">
-            <div class="text-xl font-bold text-grey-darken-1">Project finances</div>
+            <div class="text-xl font-bold text-grey-darken-1">Project Finances</div>
             <div class="flex items-center gap-1 text-sm text-grey-darken-1">
                 <v-select
                     class="mx-2"

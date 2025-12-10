@@ -1,16 +1,37 @@
 <template>
+    <div class="flex items-center justify-between">
+        <div class="text-lg font-bold text-grey-darken-1">Tasks Table</div>
+        <div class="flex items-center gap-1 text-sm text-grey-darken-1">
+            <v-select
+                class="mx-2"
+                :items="perPageOptions"
+                v-model="itemsPerPage"
+                density="compact"
+                variant="outlined"
+                rounded="lg"
+                hide-details
+                style="max-width: 90px;"
+            />
+            <span class="text-xs font-medium text-gray-500">{{ rangeStart }}-{{ rangeEnd }} of {{ totalItems }}</span>
+            <v-btn size="small" variant="text" icon="mdi-page-first" :disabled="page === 1" @click="page = 1" />
+            <v-btn size="small" variant="text" icon="mdi-chevron-left" :disabled="page === 1" @click="page = Math.max(1, page - 1)" />
+            <v-btn size="small" variant="text" icon="mdi-chevron-right" :disabled="page === pageCount" @click="page = Math.min(pageCount, page + 1)" />
+            <v-btn size="small" variant="text" icon="mdi-page-last" :disabled="page === pageCount" @click="page = pageCount" />
+        </div>
+    </div>
+    <v-divider class="mt-4"></v-divider>
     <v-data-table
         v-model:selection="selected"
         :headers="headers"
-        :items="tasks"
-        item-value="name"
-        items-per-page="5"
-        return-object
-        expand-on-click
+        :items="pagedItems"
+        item-value="description"
+        :items-per-page="itemsPerPage"
         show-expand
+        expand-on-click
+        v-model:expanded="expanded"
         hover
-        :expanded.sync="expanded"
         density="compact"
+        hide-default-footer
     >
         <!-- Status column with colored chip -->
         <template v-slot:item.status="{ item }">
@@ -21,7 +42,7 @@
 
         <!-- Row number -->
         <template v-slot:item.number="{ item }">
-            {{ tasks.indexOf(item) + 1 }}
+            {{ pagedItems.indexOf(item) + 1 }}
         </template>
 
         <!-- Checkbox column -->
@@ -39,7 +60,7 @@
         <template v-slot:expanded-row="{ columns, item }">
             <tr v-if="item.note">
                 <td :colspan="columns.length">
-                    <div class="p-2 bg-bgprimary rounded">
+                    <div class="p-2 bg-gray-100 rounded">
                         <strong>Note : </strong>
                         <span>{{ item.note }}</span>
                     </div>
@@ -66,8 +87,9 @@
 </template>
 
 <script setup>
+import { ref, computed, watch } from 'vue';
 const props = defineProps({
-    tasks: Object,
+    tasks: Array,
 });
 
 const headers = ref([
@@ -80,8 +102,26 @@ const headers = ref([
 const selected = ref([]);
 const expanded = ref([]);
 
-const tasks = computed(() => {
-    return props.tasks;
+const page = ref(1);
+const itemsPerPage = ref(10);
+const perPageOptions = [10, 25, 50];
+
+const tasks = computed(() => props.tasks || []);
+const totalItems = computed(() => tasks.value.length);
+const pageCount = computed(() => Math.max(1, Math.ceil(totalItems.value / itemsPerPage.value)));
+const rangeStart = computed(() => (totalItems.value === 0 ? 0 : (page.value - 1) * itemsPerPage.value + 1));
+const rangeEnd = computed(() => Math.min(totalItems.value, page.value * itemsPerPage.value));
+const pagedItems = computed(() => {
+    const start = (page.value - 1) * itemsPerPage.value;
+    return tasks.value.slice(start, start + itemsPerPage.value);
+});
+
+watch(itemsPerPage, () => {
+    if (page.value > pageCount.value) page.value = pageCount.value;
+});
+
+watch(tasks, () => {
+    if (page.value > pageCount.value) page.value = pageCount.value;
 });
 
 function getChildren(parent) {

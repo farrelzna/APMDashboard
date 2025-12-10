@@ -12,7 +12,7 @@ const DARK_THEME: ThemeTypes = {
         info: '#707a82', // Tone down for dark theme
         success: '#4bd08b', // Can keep success color
         warning: '#f8c076', // Consider a less saturated tone
-        error: '#fb977d', // Can keep error color
+        error: '#ff0000ff', // Can keep error color
         indigo: '#8763da', // Can keep indigo color
         lightprimary: '#46caeb', // Use a darker version of primary
         lightinfo: '#707a82', // Use info color
